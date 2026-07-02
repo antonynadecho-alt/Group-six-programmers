@@ -1,6 +1,208 @@
 import pygame
 pygame.init()
 
+# -----------------------------
+# Font
+# -----------------------------
+font = pygame.font.SysFont(None, 30)
+
+manual_button = pygame.Rect(20, 180, 180, 40)
+obstacle_button = pygame.Rect(20, 230, 180, 40)
+lane_button = pygame.Rect(20, 280, 180, 40)
+# -----------------------------
+# Feature Variables
+# -----------------------------
+manual_mode = False          # False = Autonomous, True = Manual
+obstacle_detection = True    # Obstacle detection enabled
+lane_detection = True        # Lane detection enabled
+
+
+LANES = [
+    ROAD_X + 40,
+    ROAD_X + 120,
+    ROAD_X + 200
+]
+
+current_lane = 1
+car.x = LANES[current_lane]
+
+
+running = True
+
+while running:
+
+    clock.tick(60)
+    # -------------------------
+    # Events
+    # -------------------------
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+
+            if event.key == pygame.K_m:
+                manual_mode = not manual_mode
+                print("Manual Mode:", manual_mode)
+
+            elif event.key == pygame.K_o:
+                obstacle_detection = not obstacle_detection
+                print("Obstacle Detection:", obstacle_detection)
+
+            elif event.key == pygame.K_l:
+                lane_detection = not lane_detection
+                print("Lane Detection:", lane_detection)
+
+            elif manual_mode:
+
+                if event.key == pygame.K_LEFT:
+                    if current_lane > 0:
+                        current_lane -= 1
+                        car.x = LANES[current_lane]
+
+                elif event.key == pygame.K_RIGHT:
+                    if current_lane < 2:
+                        current_lane += 1
+                        car.x = LANES[current_lane]
+ # -----------------------------------
+    # Move Pedestrian
+    # -----------------------------------
+    if pedestrian_crossing:
+        pedestrian.x += pedestrian_speed
+
+        if pedestrian.left > ROAD_X + ROAD_WIDTH + 40:
+            pedestrian_crossing = False
+
+    # -----------------------------------
+    # Detect pedestrian on crossing
+    # -----------------------------------
+    crossing_area = pygame.Rect(
+        ROAD_X,
+        ZEBRA_Y - 20,
+        ROAD_WIDTH,
+        60
+    )
+
+    pedestrian_on_crossing = pedestrian.colliderect(crossing_area)
+
+    # Get keyboard state
+    keys = pygame.key.get_pressed()
+
+    # -----------------------------------
+    # Car Movement
+    # -----------------------------------
+    if manual_mode:
+
+        if keys[pygame.K_UP]:
+            car.y -= car_speed
+
+        if keys[pygame.K_DOWN]:
+            car.y += car_speed
+
+    else:
+
+        if obstacle_detection and pedestrian_on_crossing:
+
+            # Stop before crossing
+            if car.top > ZEBRA_Y + 40:
+                car.y -= car_speed
+
+        else:
+            car.y -= car_speed
+
+    # Loop car
+    if car.bottom < 0:
+        car.y = HEIGHT
+
+    # -----------------------------------
+    # Draw
+    # -----------------------------------
+    screen.fill(GREEN)
+
+
+    # Road
+    pygame.draw.rect(screen, GRAY, (ROAD_X, 0, ROAD_WIDTH, HEIGHT))
+
+    if lane_detection:
+        # Left lane line
+        pygame.draw.line(
+            screen,
+            WHITE,
+            (ROAD_X + 100, 0),
+            (ROAD_X + 100, HEIGHT),
+            2
+        )
+
+        # Right lane line
+        pygame.draw.line(
+            screen,
+            WHITE,
+            (ROAD_X + 200, 0),
+            (ROAD_X + 200, HEIGHT),
+            2
+        )
+
+        # Zebra Crossing
+    for i in range(NUM_STRIPES):
+        stripe_x = ROAD_X + i * 40
+        pygame.draw.rect(
+            screen,
+            WHITE,
+            (stripe_x, ZEBRA_Y, STRIPE_WIDTH, STRIPE_HEIGHT)
+        )
+
+    # Car
+    pygame.draw.rect(screen, BLUE, car)
+
+    # Pedestrian
+    pygame.draw.circle(
+        screen,
+        RED,
+        (pedestrian.centerx, pedestrian.y + 8),
+        8
+    )
+
+    pygame.draw.rect(
+        screen,
+        RED,
+        (pedestrian.x + 7,
+         pedestrian.y + 16,
+         6,
+         14)
+    )
+
+    # Status
+    if pedestrian_on_crossing:
+        text = font.render("Pedestrian Detected - BRAKING", True, BLACK)
+    else:
+        text = font.render("Road Clear - Driving", True, BLACK)
+
+    screen.blit(text, (20, 20))
+
+    # -----------------------------
+    # Draw Buttons
+    # -----------------------------
+    screen.blit(font.render("M : Manual Mode", True, BLACK), (20, 180))
+    screen.blit(font.render("O : Obstacle Detection", True, BLACK), (20, 210))
+    screen.blit(font.render("L : Lane Detection", True, BLACK), (20, 240))
+
+    screen.blit(
+        font.render(f"Manual: {'ON' if manual_mode else 'OFF'}", True, WHITE),
+        (30, 190)
+    )
+
+    screen.blit(
+        font.render(f"Obstacle: {'ON' if obstacle_detection else 'OFF'}", True, WHITE),
+        (30, 240)
+    )
+
+    screen.blit(
+        font.render(f"Lane Detect: {'ON' if lane_detection else 'OFF'}", True, WHITE),
+        (30, 290)
+    )
+
+    pygame.display.flip()
+
+pygame.quit()
+sys.exit()
+
 # Controlling the entire simulation
 class Game:
     def __init__(self):
@@ -57,6 +259,145 @@ class Pedestrian:
 
     def draw(self, screen):
         pass
+
+# -----------------------------
+# Font
+# -----------------------------
+font = pygame.font.SysFont(None, 30)
+
+manual_button = pygame.Rect(20, 180, 180, 40)
+obstacle_button = pygame.Rect(20, 230, 180, 40)
+lane_button = pygame.Rect(20, 280, 180, 40)
+# -----------------------------
+# Feature Variables
+# -----------------------------
+manual_mode = False          # False = Autonomous, True = Manual
+obstacle_detection = True    # Obstacle detection enabled
+lane_detection = True        # Lane detection enabled
+
+
+LANES = [
+    ROAD_X + 40,
+    ROAD_X + 120,
+    ROAD_X + 200
+]
+
+current_lane = 1
+car.x = LANES[current_lane]
+
+
+running = True
+
+while running:
+
+    clock.tick(60)
+    # -------------------------
+    # Events
+    # -------------------------
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+
+            if event.key == pygame.K_m:
+                manual_mode = not manual_mode
+                print("Manual Mode:", manual_mode)
+
+            elif event.key == pygame.K_o:
+                obstacle_detection = not obstacle_detection
+                print("Obstacle Detection:", obstacle_detection)
+
+            elif event.key == pygame.K_l:
+                lane_detection = not lane_detection
+                print("Lane Detection:", lane_detection)
+
+            elif manual_mode:
+
+                if event.key == pygame.K_LEFT:
+                    if current_lane > 0:
+                        current_lane -= 1
+                        car.x = LANES[current_lane]
+
+                elif event.key == pygame.K_RIGHT:
+                    if current_lane < 2:
+                        current_lane += 1
+                        car.x = LANES[current_lane]
+ # -----------------------------------
+    # Move Pedestrian
+    # -----------------------------------
+    if pedestrian_crossing:
+        pedestrian.x += pedestrian_speed
+
+        if pedestrian.left > ROAD_X + ROAD_WIDTH + 40:
+            pedestrian_crossing = False
+
+    # -----------------------------------
+    # Detect pedestrian on crossing
+    # -----------------------------------
+    crossing_area = pygame.Rect(
+        ROAD_X,
+        ZEBRA_Y - 20,
+        ROAD_WIDTH,
+        60
+    )
+
+    pedestrian_on_crossing = pedestrian.colliderect(crossing_area)
+
+    # Get keyboard state
+    keys = pygame.key.get_pressed()
+
+    # -----------------------------------
+    # Car Movement
+    # -----------------------------------
+    if manual_mode:
+
+        if keys[pygame.K_UP]:
+            car.y -= car_speed
+
+        if keys[pygame.K_DOWN]:
+            car.y += car_speed
+
+    else:
+
+        if obstacle_detection and pedestrian_on_crossing:
+
+            # Stop before crossing
+            if car.top > ZEBRA_Y + 40:
+                car.y -= car_speed
+
+        else:
+            car.y -= car_speed
+
+    # Loop car
+    if car.bottom < 0:
+        car.y = HEIGHT
+
+    # -----------------------------------
+    # Draw
+    # -----------------------------------
+    screen.fill(GREEN)
+
+
+    # Road
+    pygame.draw.rect(screen, GRAY, (ROAD_X, 0, ROAD_WIDTH, HEIGHT))
+
+    if lane_detection:
+        # Left lane line
+        pygame.draw.line(
+            screen,
+            WHITE,
+            (ROAD_X + 100, 0),
+            (ROAD_X + 100, HEIGHT),
+            2
+        )
+
+        # Right lane line
+        pygame.draw.line(
+            screen,
+            WHITE,
+            (ROAD_X + 200, 0),
+            (ROAD_X + 200, HEIGHT),
+            2
+        )
+
 # Zebra crossing
 class ZebraCrossing:
     def __init__(self):
