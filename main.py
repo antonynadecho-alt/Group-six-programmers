@@ -6,7 +6,7 @@ import time
 pygame.init()
 
 # -----------------------------
-# Screen Settings
+# SCREEN SETTINGS
 # -----------------------------
 WIDTH = 800
 HEIGHT = 700
@@ -16,7 +16,7 @@ pygame.display.set_caption("Autonomous Matatu - Self-Driving Simulation")
 clock = pygame.time.Clock()
 
 # -----------------------------
-# Colors
+# COLOURS
 # -----------------------------
 GREEN = (34, 177, 76)
 GRAY = (60, 60, 60)
@@ -29,7 +29,7 @@ ORANGE = (255, 140, 0)
 YELLOW = (255, 220, 0)
 
 # -----------------------------
-# Road & Lane Setup
+# ROAD & LANE SETUP
 # -----------------------------
 ROAD_X = 200
 ROAD_WIDTH = 400
@@ -61,7 +61,7 @@ lane_change_cooldown = 0
 LANE_CHANGE_DELAY = 20
 
 # -----------------------------
-# Game state
+# Game condition
 # -----------------------------
 score = 0
 distance_m = 0
