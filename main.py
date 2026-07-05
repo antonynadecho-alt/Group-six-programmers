@@ -176,7 +176,7 @@ def get_danger_in_lane(lane_index):
 
 
 # -----------------------------
-# Stop zone (close range, only for pedestrian crossings)
+# Stoping (close range, only for pedestrian crossings)
 # -----------------------------
 STOP_ZONE_TOP = car.top - 70
 STOP_ZONE_BOTTOM = car.top + 10
@@ -214,7 +214,7 @@ while running:
 
     elapsed = time.time() - start_time
 
-    # ---------------- AUTONOMOUS DECISION LOGIC ----------------
+    # ---------------- AUTONOMOUS MOVEMENT ----------------
     blocking_crossing = pedestrian_blocking_car()
 
     if blocking_crossing is not None:
@@ -267,7 +267,7 @@ while running:
     elif car.centerx > target_x:
         car.centerx = max(car.centerx - 8, target_x)
 
-    # ---------------- UPDATE OBSTACLES ----------------
+    # ----------------  OBSTACLES ----------------
     for obs in obstacles:
         if isinstance(obs, Vehicle):
             obs.update(car_speed)
@@ -284,7 +284,7 @@ while running:
             still_active.append(obs)
     obstacles = still_active
 
-    # ---------------- COLLISION CHECK ----------------
+    # ---------------- COLLISION  ----------------
     for obs in obstacles:
         if isinstance(obs, Vehicle):
             if car.colliderect(obs.rect):
@@ -302,7 +302,7 @@ while running:
     distance_m += car_speed / 10
     scroll_offset = (scroll_offset + car_speed) % 80
 
-    # ---------------- DRAW ----------------
+    # ---------------- DRAWINGS ----------------
     screen.fill(GREEN)
     pygame.draw.rect(screen, GRAY, (ROAD_X, 0, ROAD_WIDTH, HEIGHT))
 
@@ -320,7 +320,7 @@ while running:
     pygame.draw.rect(screen, BLUE, car, border_radius=8)
     pygame.draw.rect(screen, WHITE, (car.x + 8, car.y + 10, car.width - 16, 20))
 
-    # ---------------- HUD ----------------
+    # ---------------- DISPLAY ----------------
     status_label = "STOPPED (pedestrian)" if car_speed == 0 else ("BRAKING" if braking else "")
     hud_lines = [
         f"Speed: {car_speed * 10} km/h" + (f"  [{status_label}]" if status_label else ""),
